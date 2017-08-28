@@ -29,16 +29,16 @@ function go(){
     console.log(angle);
 
     // Draw some lines
-    canv.line(0,0,640,480,1,'#FF0000');
-    canv.line(0,480,640,0,5,'#00FF00');
+    canv.line(pos_x,pos_y,pos_x*1.5+640,pos_y*1.5+480,1,'#FF0000');
+    canv.line(pos_x,pos_y+480,pos_x*3+640,pos_y*3,5,'#00FF00');
 
     // Draw some triangles
-    canv.triangle(150,150,250,250,50,250,'#FF0000');
-    canv.triangle(250,350,450,350,350,450,'#00FF00');
+    canv.triangle(pos_x*2+150,pos_y+150,pos_x*2+250,pos_y+250,pos_x*2+50,pos_y+250,'#FF0000');
+    canv.triangle(pos_x*2+250,pos_y+350,pos_x*2+450,pos_y+350,pos_x*2+350,pos_y+450,'#00FF00');
 
     // Draw some quadrants
-    canv.quad(0,150,300,150,250,250,50,250,'#FF0000');
-    canv.quad(50,50,70,100,'#00FF00');
+    canv.quad(pos_x*2,pos_y*2+150,pos_x+300,pos_y*3+150,pos_x+250,pos_y*3+250,pos_x+50,pos_y+250,'#FF0000');
+    canv.quad(pos_x+50,50,pos_x+70,100,'#00FF00');
 
     // And our image...
     myimage.draw(canv,pos_x,pos_y,0.8);
