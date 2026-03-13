@@ -108,6 +108,32 @@
         animation: tearline 0.4s linear;
       }
 
+      /* Flip glitch - upside down */
+      @keyframes flipglitch {
+        0%   { transform: perspective(800px) rotateX(0deg); }
+        30%  { transform: perspective(800px) rotateX(180deg); }
+        70%  { transform: perspective(800px) rotateX(180deg); }
+        85%  { transform: perspective(800px) rotateX(360deg) skewX(-3deg); filter: hue-rotate(120deg); }
+        100% { transform: perspective(800px) rotateX(360deg); filter: none; }
+      }
+
+      /* Rotate glitch - 90 degree spin */
+      @keyframes spinglitch {
+        0%   { transform: rotate(0deg); }
+        25%  { transform: rotate(90deg) scale(0.8); filter: brightness(1.4) saturate(3); }
+        60%  { transform: rotate(90deg) scale(0.8); filter: hue-rotate(-90deg); }
+        80%  { transform: rotate(360deg) scale(1); filter: brightness(0.6); }
+        100% { transform: rotate(360deg); filter: none; }
+      }
+
+      #crt.flip-glitching {
+        animation: flipglitch 1.2s ease-in-out;
+      }
+
+      #crt.spin-glitching {
+        animation: spinglitch 1s ease-in-out;
+      }
+
       #screen {
         background-color: #40318D;
         color: #6C5EB5;
@@ -191,19 +217,43 @@
     </div>
 
     <script>
-      // Random glitch at 4-8 second intervals
+      var crt = document.getElementById('crt');
+
+      // Small glitch (skew + tear) at 4-8 second intervals
       function triggerGlitch() {
-        var crt = document.getElementById('crt');
         crt.classList.add('glitching');
         setTimeout(function() {
           crt.classList.remove('glitching');
         }, 400);
-        // Schedule next glitch at random 4-8s interval
-        var next = 4000 + Math.random() * 4000;
-        setTimeout(triggerGlitch, next);
+        setTimeout(triggerGlitch, 4000 + Math.random() * 4000);
       }
-      // Start first glitch after initial random delay
+
+      // Flip glitch (upside down and back) at 8-16 second intervals
+      function triggerFlip() {
+        if (!crt.classList.contains('spin-glitching')) {
+          crt.classList.add('flip-glitching');
+          setTimeout(function() {
+            crt.classList.remove('flip-glitching');
+          }, 1200);
+        }
+        setTimeout(triggerFlip, 8000 + Math.random() * 8000);
+      }
+
+      // Spin glitch (90 degree rotation) at 12-22 second intervals
+      function triggerSpin() {
+        if (!crt.classList.contains('flip-glitching')) {
+          crt.classList.add('spin-glitching');
+          setTimeout(function() {
+            crt.classList.remove('spin-glitching');
+          }, 1000);
+        }
+        setTimeout(triggerSpin, 12000 + Math.random() * 10000);
+      }
+
+      // Stagger initial triggers
       setTimeout(triggerGlitch, 4000 + Math.random() * 4000);
+      setTimeout(triggerFlip, 6000 + Math.random() * 8000);
+      setTimeout(triggerSpin, 10000 + Math.random() * 10000);
     </script>
   </body>
 </html>
