@@ -22,7 +22,13 @@ var satellites = [
     { radius: 40,  scale: 0.12, speed: 4.0,  phase: Math.PI * 0.8 },
     { radius: 90,  scale: 0.10, speed: -3.5, phase: Math.PI * 0.1 },
     { radius: 120, scale: 0.08, speed: 5.0,  phase: Math.PI * 1.1 },
-    { radius: 60,  scale: 0.10, speed: -4.2, phase: Math.PI * 1.6 }
+    { radius: 60,  scale: 0.10, speed: -4.2, phase: Math.PI * 1.6 },
+    // Extra
+    { radius: 180, scale: 0.6,  speed: 0.8,  phase: Math.PI * 0.3 },
+    { radius: 70,  scale: 0.45, speed: -1.2, phase: Math.PI * 1.9 },
+    { radius: 160, scale: 0.18, speed: 2.8,  phase: Math.PI * 0.7 },
+    { radius: 30,  scale: 0.30, speed: -3.0, phase: Math.PI * 1.4 },
+    { radius: 100, scale: 0.06, speed: 5.5,  phase: Math.PI * 0.6 }
 ];
 
 /**
@@ -30,6 +36,7 @@ var satellites = [
  */
 function init(){
     canv=new canvas(640,480,"main");
+    myimage.setmidhandle();
     go();
 }
 
@@ -44,15 +51,13 @@ function go(){
     var cy = 240;
 
     // Draw all the orbiting heads
-    var imgW = 640;
-    var imgH = 480;
+    // draw signature: draw(dst, x, y, alpha, rotation, scaleW, scaleH)
     for (var i = 0; i < satellites.length; i++) {
         var s = satellites[i];
         var a = angle * s.speed + s.phase;
-        // Offset by half the scaled image size so orbits are centered
-        var sx = cx + s.radius * Math.cos(a) - (imgW * s.scale) / 2;
-        var sy = cy + s.radius * Math.sin(a) - (imgH * s.scale) / 2;
-        myimage.draw(canv, sx, sy, s.scale);
+        var sx = cx + s.radius * Math.cos(a);
+        var sy = cy + s.radius * Math.sin(a);
+        myimage.draw(canv, sx, sy, 0.4, 0, s.scale, s.scale);
     }
 
     angle = (angle + angle_step) % (2*Math.PI);
