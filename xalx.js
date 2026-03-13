@@ -44,11 +44,14 @@ function go(){
     var cy = 240;
 
     // Draw all the orbiting heads
+    var imgW = 640;
+    var imgH = 480;
     for (var i = 0; i < satellites.length; i++) {
         var s = satellites[i];
         var a = angle * s.speed + s.phase;
-        var sx = cx + s.radius * Math.cos(a);
-        var sy = cy + s.radius * Math.sin(a);
+        // Offset by half the scaled image size so orbits are centered
+        var sx = cx + s.radius * Math.cos(a) - (imgW * s.scale) / 2;
+        var sy = cy + s.radius * Math.sin(a) - (imgH * s.scale) / 2;
         myimage.draw(canv, sx, sy, s.scale);
     }
 
