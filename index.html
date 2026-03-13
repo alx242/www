@@ -29,6 +29,83 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
+      }
+
+      /* CRT wrapper for curvature + vignette */
+      #crt {
+        position: relative;
+        min-width: 80%;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      /* Scanlines overlay */
+      #crt::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 2px,
+          rgba(0, 0, 0, 0.15) 2px,
+          rgba(0, 0, 0, 0.15) 4px
+        );
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      /* Vignette overlay */
+      #crt::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(
+          ellipse at center,
+          transparent 60%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+        pointer-events: none;
+        z-index: 11;
+      }
+
+      /* Glitch effect */
+      @keyframes glitch {
+        0%   { transform: translate(0, 0) skewX(0deg); filter: none; }
+        5%   { transform: translate(-3px, 1px) skewX(-2deg); filter: hue-rotate(90deg) brightness(1.3); }
+        10%  { transform: translate(4px, -2px) skewX(1deg); filter: hue-rotate(-60deg) saturate(2); }
+        15%  { transform: translate(-2px, 3px) skewX(3deg); filter: brightness(0.7); }
+        20%  { transform: translate(1px, -1px) skewX(-1deg); filter: hue-rotate(45deg) brightness(1.5); }
+        25%  { transform: translate(0, 0) skewX(0deg); filter: none; }
+        100% { transform: translate(0, 0) skewX(0deg); filter: none; }
+      }
+
+      #crt.glitching #screen {
+        animation: glitch 0.4s ease-in-out;
+      }
+
+      /* Horizontal tear line during glitch */
+      @keyframes tearline {
+        0%   { top: 20%; opacity: 1; }
+        50%  { top: 70%; opacity: 0.8; }
+        100% { top: 90%; opacity: 0; }
+      }
+
+      #glitch-tear {
+        display: none;
+        position: absolute;
+        left: 0; right: 0;
+        height: 3px;
+        background: rgba(108, 94, 181, 0.6);
+        box-shadow: 0 0 8px rgba(108, 94, 181, 0.8);
+        z-index: 12;
+        pointer-events: none;
+      }
+
+      #crt.glitching #glitch-tear {
+        display: block;
+        animation: tearline 0.4s linear;
       }
 
       #screen {
@@ -38,7 +115,11 @@
         line-height: 1.2;
         text-transform: uppercase;
         text-align: center;
-        min-width: 80%;
+      }
+
+      #title {
+        text-align: center;
+        margin-bottom: 1.2em;
       }
 
       #text {
@@ -88,20 +169,41 @@
 
   </head>
   <body onLoad="init();">
-    <div id="screen">
-      <div id="text">
-        **** COMMODORE 64 BASIC V2 ****<br><br>
-        64K RAM SYSTEM  38911 BASIC BYTES FREE<br><br>
-        READY.<br>
-        <span id="cursor"></span>
+    <div id="crt">
+      <div id="glitch-tear"></div>
+      <div id="screen">
+        <div id="title">
+          **** COMMODORE 64 BASIC V2 ****
+        </div>
+        <div id="text">
+          64K RAM SYSTEM  38911 BASIC BYTES FREE<br><br>
+          READY.<br>
+          <span id="cursor"></span>
+        </div>
+
+        <div id="main"></div>
+
+        <div id="links">
+          [<a href="https://github.com/alx242">G</a>]-O-[<a href="https://www.linkedin.com/in/alx242/">L</a>]-O-[<a href="https://bsky.app/profile/alx242.bsky.social">B</a>]-O-[<a href="https://www.instagram.com/alx242/">I</a>]-O-[<a href="https://soundcloud.com/alx242">S</a>]-O-[<a href="mailto:alex@xalx.net">M</a>]
+        </div>
+
       </div>
-
-      <div id="main"></div>
-
-      <div id="links">
-        [<a href="https://github.com/alx242">G</a>]-O-[<a href="https://www.linkedin.com/in/alx242/">L</a>]-O-[<a href="https://bsky.app/profile/alx242.bsky.social">B</a>]-O-[<a href="https://www.instagram.com/alx242/">I</a>]-O-[<a href="https://soundcloud.com/alx242">S</a>]-O-[<a href="mailto:alex@xalx.net">M</a>]
-      </div>
-
     </div>
+
+    <script>
+      // Random glitch at 4-8 second intervals
+      function triggerGlitch() {
+        var crt = document.getElementById('crt');
+        crt.classList.add('glitching');
+        setTimeout(function() {
+          crt.classList.remove('glitching');
+        }, 400);
+        // Schedule next glitch at random 4-8s interval
+        var next = 4000 + Math.random() * 4000;
+        setTimeout(triggerGlitch, next);
+      }
+      // Start first glitch after initial random delay
+      setTimeout(triggerGlitch, 4000 + Math.random() * 4000);
+    </script>
   </body>
 </html>
